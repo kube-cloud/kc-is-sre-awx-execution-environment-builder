@@ -1,1 +1,5 @@
+# Ignore VSCode Custom Files
 *.vscode*
+
+# Ignore Build Context Directory
+context

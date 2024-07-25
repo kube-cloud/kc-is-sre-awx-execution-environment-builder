@@ -1,0 +1,48 @@
+name: Build and Publish AWX Execution Environment
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - '**'
+
+jobs:
+  build-awx-ee:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-22.04
+        python-version:
+          - "3.11"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout AWX-EE repository
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '${{ matrix.python-version }}'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible-builder
+      - name: Determine AWX-EE Docker Image TAG
+        id: determine-image-tag
+        run: |
+          if [[ "${{ github.ref }}" == refs/heads/main || "${{ github.ref }}" == refs/heads/develop ]]; then
+            echo "TAG=latest" >> $GITHUB_ENV
+            echo "PUSH=true" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            TAG=$(echo "${{ github.ref }}" | sed 's/refs\/tags\///')
+            echo "TAG=${TAG}" >> $GITHUB_ENV
+            echo "PUSH=true" >> $GITHUB_ENV
+          else
+            TAG=$(echo "${{ github.ref }}" | sed 's/refs\/heads\///')
+            echo "TAG=${TAG}" >> $GITHUB_ENV
+            echo "PUSH=false" >> $GITHUB_ENV
+          fi
+          echo "AWX-EE TAG : $TAG"
+      - name: Build AWX-EE Docker Image
+        run: |
+          ansible-builder build -t awx-ee:${{ env.TAG }} -f execution-environment.yml
