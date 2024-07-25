@@ -48,5 +48,7 @@ jobs:
       - name: Build AWX-EE Docker Image
         run: |
           ansible-builder build -v3 -t ${{ env.AWX_EE_IMAGE_REPOSITORY }}:${{ env.TAG }} -f execution-environment.yml
+          docker ps
+          docker pull ubuntu
           docker push ${{ env.AWX_EE_IMAGE_REPOSITORY }}:${{ env.TAG }}
 
