@@ -48,7 +48,7 @@ jobs:
       - name: Build AWX-EE Docker Image
         run: |
           ansible-builder create -v3 --output-file=Dockerfile
-          ansible-builder build -v3 --tag=${{ env.AWX_EE_IMAGE_REPOSITORY }}:${{ env.TAG }} context
+          docker build --tag=${{ env.AWX_EE_IMAGE_REPOSITORY }}:${{ env.TAG }} context
           docker images
       - name: Publish AWX-EE Docker Image
         run: |
