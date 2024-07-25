@@ -26,6 +26,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install ansible-builder
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Determine AWX-EE Docker Image TAG
         id: determine-image-tag
         run: |
@@ -58,11 +61,16 @@ jobs:
           ansible-builder create -v3 --output-file=Dockerfile
 
       - name: Build AWX-EE Docker Image
-        run: |
-          docker build --tag=${{ env.AWX_EE_IMAGE_REPOSITORY }}:${{ env.TAG }} context
-          docker images
+        uses: docker/build-push-action@v6
+        with:
+          context: "context"
+          push: false
+          tags: "${{ env.AWX_EE_IMAGE_REPOSITORY }}:${{ env.TAG }}"
 
       - name: Publish AWX-EE Docker Image
-        run: |
-          [ "${{ env.PUSH }}" = "true" ] && docker push ${{ env.AWX_EE_IMAGE_REPOSITORY }}:${{ env.TAG }}
-
+        if: ${{ env.PUSH }} == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: "context"
+          push: true
+          tags: "${{ env.AWX_EE_IMAGE_REPOSITORY }}:${{ env.TAG }}"
