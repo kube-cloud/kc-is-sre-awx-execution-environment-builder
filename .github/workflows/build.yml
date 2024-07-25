@@ -45,4 +45,4 @@ jobs:
           echo "AWX-EE TAG : $TAG"
       - name: Build AWX-EE Docker Image
         run: |
-          ansible-builder build -t awx-ee:${{ env.TAG }} -f execution-environment.yml
+          ansible-builder build -v3 -t awx-ee:${{ env.TAG }} -f execution-environment.yml
