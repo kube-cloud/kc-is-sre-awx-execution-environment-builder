@@ -6,23 +6,19 @@ on:
       - '**'
     tags:
       - '**'
+env:
+  AWX_EE_IMAGE_REPOSITORY: quay.io/kube_cloud/awx-ee
 
 jobs:
   build-awx-ee:
-    strategy:
-      matrix:
-        os:
-          - ubuntu-22.04
-        python-version:
-          - "3.11"
-    runs-on: ${{ matrix.os }}
+    runs-on: [ubuntu-22.04]
     steps:
       - name: Checkout AWX-EE repository
         uses: actions/checkout@v2
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '${{ matrix.python-version }}'
+          python-version: '3.11'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -51,8 +47,6 @@ jobs:
           password: ${{ secrets.QUAY_PASSWORD }}
       - name: Build AWX-EE Docker Image
         run: |
-          ansible-builder build -v3 -t quay.io/kube_cloud/awx-ee:${{ env.TAG }} -f execution-environment.yml
-      - name: Publish AWX-EE Docker image
-        if: env.PUSH == 'true'
-        run: |
-          docker push quay.io/kube_cloud/awx-ee:${{ env.TAG }}
+          ansible-builder build -v3 -t ${{ env.AWX_EE_IMAGE_REPOSITORY }}:${{ env.TAG }} -f execution-environment.yml
+          [ "$TAG" = "true" ] && docker push ${{ env.AWX_EE_IMAGE_REPOSITORY }}:${{ env.TAG }}
+
