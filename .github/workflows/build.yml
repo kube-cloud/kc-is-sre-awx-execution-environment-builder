@@ -43,6 +43,15 @@ jobs:
             echo "PUSH=false" >> $GITHUB_ENV
           fi
           echo "AWX-EE TAG : $TAG"
+      - name: Login to Quay.io
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
       - name: Build AWX-EE Docker Image
         run: |
           ansible-builder build -v3 -t awx-ee:${{ env.TAG }} -f execution-environment.yml
+      - name: Publish AWX-EE Docker image
+        if: env.PUSH == 'true'
+        run: |
+          docker push quay.io/kube_cloud/awx-ee:${{ env.TAG }}
