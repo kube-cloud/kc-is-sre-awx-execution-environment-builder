@@ -67,6 +67,16 @@ jobs:
           context: "context"
           push: false
           tags: "${{ env.AWX_EE_IMAGE_REPOSITORY }}:${{ env.TAG }}"
+      
+      - name: Scan AWX-EE Docker Image Vulnerabilities Trivy
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: "${{ env.AWX_EE_IMAGE_REPOSITORY }}:${{ env.TAG }}"
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
 
       - name: Publish AWX-EE Docker Image
         if: ${{ env.PUSH }} == 'true'
