@@ -59,6 +59,7 @@ jobs:
       - name: Generate AWX-EE Dockerfile and Context
         run: |
           ansible-builder create -v3 --output-file=Dockerfile
+          cat context/Dockerfile
 
       - name: Build AWX-EE Docker Image
         uses: docker/build-push-action@v6

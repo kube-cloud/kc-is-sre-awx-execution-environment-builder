@@ -14,4 +14,4 @@ dependencies:
 # Additional Steps
 additional_build_steps:
   append_base: |
-    RUN python install --upgrade pip setuptools
+    RUN $PYCMD install --upgrade pip
