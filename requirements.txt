@@ -11,5 +11,6 @@ pyyaml
 six
 receptorctl
 passlib
+pydantic
 hvac
 python-consul

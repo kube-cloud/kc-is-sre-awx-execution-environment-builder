@@ -1,3 +1,11 @@
+roles:
+  - name: kubecloud.consul-config-loader
+    src: https://github.com/kube-cloud/kc-is-sre-ansible-role-consul-config-loader
+    version: 1.0.0
+  - name: kubecloud.vault-secrets-loader
+    src: https://github.com/kube-cloud/kc-is-sre-ansible-role-vault-secrets-loader
+    version: 1.0.0
+
 collections:
   - name: community.general
   - name: community.crypto
