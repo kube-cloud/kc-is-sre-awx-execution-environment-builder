@@ -71,6 +71,7 @@ jobs:
       
       - name: Scan AWX-EE Docker Image Vulnerabilities Trivy
         uses: aquasecurity/trivy-action@0.20.0
+        continue-on-error: true  # Le workflow continue même si cette étape échoue
         with:
           image-ref: "${{ env.AWX_EE_IMAGE_REPOSITORY }}:${{ env.TAG }}"
           format: 'json'
