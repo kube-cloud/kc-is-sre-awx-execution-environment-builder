@@ -66,6 +66,7 @@ jobs:
         with:
           context: "context"
           push: false
+          load: true
           tags: "${{ env.AWX_EE_IMAGE_REPOSITORY }}:${{ env.TAG }}"
       
       - name: Scan AWX-EE Docker Image Vulnerabilities Trivy
